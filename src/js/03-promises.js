@@ -11,24 +11,22 @@ function createPromise(position, delay) {
   });
 }
 
-document.querySelector('.form').addEventListener('submit', event => {
+const form = document.querySelector('form');
+form.addEventListener('submit', event => {
   event.preventDefault();
-
-  const delayInput = document.querySelector('input[name="delay"]');
-  const stepInput = document.querySelector('input[name="step"]');
-  const amountInput = document.querySelector('input[name="amount"]');
-
-  const delay = Number(delayInput.value);
-  const step = Number(stepInput.value);
-  const amount = Number(amountInput.value);
+  const amount = Number(form.amount.value);
+  const delay = Number(form.delay.value);
+  const step = Number(form.step.value);
 
   for (let i = 0; i < amount; i++) {
-    createPromise(i, delay + i * step)
+    createPromise(i + 1, delay)
       .then(({ position, delay }) => {
         console.log(`✅ Fulfilled promise ${position} in ${delay}ms`);
       })
       .catch(({ position, delay }) => {
         console.log(`❌ Rejected promise ${position} in ${delay}ms`);
       });
+
+    delay += step;
   }
 });
