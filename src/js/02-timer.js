@@ -1,6 +1,9 @@
 import flatpickr from 'flatpickr/dist/flatpickr.min.js';
 import 'flatpickr/dist/flatpickr.min.css';
-
+document.querySelector('[data-days]').textContent = addLeadingZero(days);
+document.querySelector('[data-hours]').textContent = addLeadingZero(hours);
+document.querySelector('[data-minutes]').textContent = addLeadingZero(minutes);
+document.querySelector('[data-seconds]').textContent = addLeadingZero(seconds);
 const options = {
   enableTime: true,
   time_24hr: true,
@@ -9,7 +12,7 @@ const options = {
   onClose(selectedDates) {
     const selectedDate = selectedDates[0];
     const currentDate = new Date();
-    const startButton = document.getElementById('start-button');
+    const startButton = document.querySelector('[start-button]');
     if (selectedDate < currentDate) {
       window.alert('Please choose a date in the future');
     } else {
@@ -19,7 +22,7 @@ const options = {
 };
 
 const flatpickrInstance = flatpickr('#datetime-picker', options);
-const startButton = document.getElementById('start-button');
+const startButton = document.querySelector('[start-button]');
 let interval;
 startButton.addEventListener('click', () => {
   const selectedDate = flatpickrInstance.selectedDates[0];
@@ -30,17 +33,10 @@ startButton.addEventListener('click', () => {
     interval = setInterval(() => {
       const remainingTime = countdown - new Date().getTime();
       const { days, hours, minutes, seconds } = convertMs(remainingTime);
-      document.querySelector('[data-days]').textContent = addLeadingZero(days);
-      document.querySelector('[data-hours]').textContent =
-        addLeadingZero(hours);
-      document.querySelector('[data-minutes]').textContent =
-        addLeadingZero(minutes);
-      document.querySelector('[data-seconds]').textContent =
-        addLeadingZero(seconds);
 
       if (remainingTime < 0) {
         clearInterval(interval);
-        document.getElementById('start-button').disabled = true;
+        document.querySelector('[start-button]').disabled = true;
       }
     }, 1000);
   }
