@@ -21,13 +21,13 @@ form.addEventListener('submit', async event => {
   try {
     for (let i = 0; i < amount; i++) {
       const result = await createPromise(i + 1, currentDelay);
-      console.log(
+      Notiflix.Notify.Success(
         `✅ Fulfilled promise ${result.position} in ${result.delay}ms`
       );
       currentDelay += step;
     }
   } catch (error) {
-    console.error(
+    Notiflix.Notify.Failure(
       `❌ Error in promise ${error.position} with delay ${error.delay}ms`
     );
   }

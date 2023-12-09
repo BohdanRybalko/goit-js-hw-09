@@ -20,6 +20,7 @@ const options = {
       window.alert('Please choose a date in the future');
     } else {
       startButton.disabled = false;
+      initializeTimer(selectedDate);
     }
   },
 };
@@ -28,29 +29,33 @@ const flatpickrInstance = flatpickr('#datetime-picker', options);
 
 let interval;
 
-startButton.addEventListener('click', () => {
-  const selectedDate = flatpickrInstance.selectedDates[0];
-  const currentTime = new Date().getTime();
-  const selectedTime = selectedDate.getTime();
+function initializeTimer(selectedDate) {
+  startButton.removeEventListener('click', initializeTimer);
+  startButton.addEventListener('click', () => {
+    startButton.disabled = true;
 
-  if (selectedTime > currentTime) {
-    const countdown = selectedTime - currentTime;
-    interval = setInterval(() => {
-      const remainingTime = countdown - new Date().getTime();
-      const { days, hours, minutes, seconds } = convertMs(remainingTime);
+    const currentTime = new Date().getTime();
+    const selectedTime = selectedDate.getTime();
 
-      daysElement.textContent = addLeadingZero(days);
-      hoursElement.textContent = addLeadingZero(hours);
-      minutesElement.textContent = addLeadingZero(minutes);
-      secondsElement.textContent = addLeadingZero(seconds);
+    if (selectedTime > currentTime) {
+      const countdown = selectedTime - currentTime;
+      interval = setInterval(() => {
+        const remainingTime = countdown - new Date().getTime();
+        const { days, hours, minutes, seconds } = convertMs(remainingTime);
 
-      if (remainingTime < 0) {
-        clearInterval(interval);
-        startButton.disabled = true;
-      }
-    }, 1000);
-  }
-});
+        daysElement.textContent = addLeadingZero(days);
+        hoursElement.textContent = addLeadingZero(hours);
+        minutesElement.textContent = addLeadingZero(minutes);
+        secondsElement.textContent = addLeadingZero(seconds);
+
+        if (remainingTime < 0) {
+          clearInterval(interval);
+          startButton.disabled = true;
+        }
+      }, 1000);
+    }
+  });
+}
 
 function addLeadingZero(value) {
   return String(value).padStart(2, '0');
@@ -65,9 +70,7 @@ function convertMs(remainingTime) {
   const days = Math.floor(remainingTime / day);
   const hours = Math.floor((remainingTime % day) / hour);
   const minutes = Math.floor(((remainingTime % day) % hour) / minute);
-  const seconds = Math.floor(
-    (((remainingTime % day) % hour) % minute) / second
-  );
+  const seconds = Math.floor(((remainingTime % day) % hour) / second);
 
   return { days, hours, minutes, seconds };
 }
