@@ -29,33 +29,30 @@ const flatpickrInstance = flatpickr('#datetime-picker', options);
 
 let interval;
 
-function initializeTimer(selectedDate) {
-  startButton.removeEventListener('click', initializeTimer);
-  startButton.addEventListener('click', () => {
-    startButton.disabled = true;
+startButton.addEventListener('click', () => {
+  startButton.disabled = true;
+  Input.disabled = true;
 
-    const currentTime = new Date().getTime();
-    const selectedTime = selectedDate.getTime();
+  const currentTime = new Date().getTime();
 
-    if (selectedTime > currentTime) {
-      const countdown = selectedTime - currentTime;
-      interval = setInterval(() => {
-        const remainingTime = countdown - new Date().getTime();
-        const { days, hours, minutes, seconds } = convertMs(remainingTime);
+  if (selectedDate > currentTime) {
+    interval = setInterval(() => {
+      const remainingTime = flatpickr.selectedDates(0) - new Date().getTime();
+      const { days, hours, minutes, seconds } = convertMs(remainingTime);
 
-        daysElement.textContent = addLeadingZero(days);
-        hoursElement.textContent = addLeadingZero(hours);
-        minutesElement.textContent = addLeadingZero(minutes);
-        secondsElement.textContent = addLeadingZero(seconds);
+      daysElement.textContent = addLeadingZero(days);
+      hoursElement.textContent = addLeadingZero(hours);
+      minutesElement.textContent = addLeadingZero(minutes);
+      secondsElement.textContent = addLeadingZero(seconds);
 
-        if (remainingTime < 0) {
-          clearInterval(interval);
-          startButton.disabled = true;
-        }
-      }, 1000);
-    }
-  });
-}
+      if (remainingTime <= 1000) {
+        clearInterval(interval);
+        startButton.disabled = true;
+        Input.disabled = true;
+      }
+    }, 1000);
+  }
+});
 
 function addLeadingZero(value) {
   return String(value).padStart(2, '0');
