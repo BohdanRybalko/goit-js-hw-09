@@ -6,6 +6,9 @@ const daysElement = document.querySelector('[data-days]');
 const hoursElement = document.querySelector('[data-hours]');
 const minutesElement = document.querySelector('[data-minutes]');
 const secondsElement = document.querySelector('[data-seconds]');
+const inputElement = document.querySelector('#datetime-picker');
+
+let selectedDate;
 
 const options = {
   enableTime: true,
@@ -13,31 +16,30 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    const selectedDate = selectedDates[0];
+    selectedDate = selectedDates[0];
     const currentDate = new Date();
 
     if (selectedDate < currentDate) {
       window.alert('Please choose a date in the future');
     } else {
       startButton.disabled = false;
-      initializeTimer(selectedDate);
     }
   },
 };
 
-const flatpickrInstance = flatpickr('#datetime-picker', options);
+const flatpickrInstance = flatpickr(inputElement, options);
 
 let interval;
 
 startButton.addEventListener('click', () => {
   startButton.disabled = true;
-  Input.disabled = true;
+  inputElement.disabled = true;
 
   const currentTime = new Date().getTime();
 
   if (selectedDate > currentTime) {
     interval = setInterval(() => {
-      const remainingTime = flatpickr.selectedDates(0) - new Date().getTime();
+      const remainingTime = selectedDate - new Date().getTime();
       const { days, hours, minutes, seconds } = convertMs(remainingTime);
 
       daysElement.textContent = addLeadingZero(days);
@@ -48,7 +50,7 @@ startButton.addEventListener('click', () => {
       if (remainingTime <= 1000) {
         clearInterval(interval);
         startButton.disabled = true;
-        Input.disabled = true;
+        inputElement.disabled = true;
       }
     }, 1000);
   }
